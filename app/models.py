@@ -52,7 +52,7 @@ class Posts(db.Model):
     photo = db.Column(db.String)
     user_id = db.Column(db.Integer) #db.ForeignKey("users.id"))
     created_on = db.Column(db.DateTime, default=datetime.now)
-    likes = db.relationship("Likes", backref="posts")
+    #likes = db.relationship("Likes", backref="posts")
     
 class Likes(db.Model):
 
