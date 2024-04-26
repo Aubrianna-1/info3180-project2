@@ -141,10 +141,8 @@ def extract_user_id_from_token(token):
 @authorize
 def follow(user_id):
   """Allows a user to follow another user.
-  Args:
-      user_id: The ID of the current user attempting to follow (other person).
-  Returns:
-      A JSON response indicating success or failure.
+  Args: user_id: The ID of the current user attempting to follow (other person).
+  Returns: A JSON response indicating success or failure.
   """
   current_user = Users.query.filter_by(id=user_id).first()
   if not current_user:
@@ -171,6 +169,32 @@ def follow(user_id):
   db.session.commit()
 
   return jsonify({"message": f"You are now following {other_user.username}"}), 201
+
+#adding a new post
+@app.route("/api/v1/users/<userId>/posts", methods=["POST"])
+def create_post(current_user_id):
+    form = PostForm()
+    id = current_user_id
+    user = Users.query.filter_by(id=id).first()
+    
+    if request.method == "POST":
+        if form.validate_on_submit():
+           image = form.photo.data
+           caption = request.form['caption']
+           
+           filename = secure_filename(image.filename)
+           image_location = os.path.join(app.config['UPLOAD_FOLDER'],filename)
+           image.save(image_location)
+           newPost = Posts(photo=filename, caption=caption, user=user)
+           
+           db.session.add(newPost)
+           db.session.commit()
+           
+           return jsonify({
+            "message": "New Post Added"
+            })
+        else:
+           return "Error! Something went wrong"
 
 #logout
 @app.route("/api/v1/auth/logout", methods = ["POST"])
