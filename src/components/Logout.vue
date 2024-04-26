@@ -104,8 +104,6 @@
         justify-content: center;
         text-align: center;
 
-        
-
         background-color: white;
         padding: 50px;
 

@@ -19,7 +19,6 @@ let message = ref("Hello World! This is a VueJS and Flask Starter Template.")
 <script setup>
 
 
-
 <template>
     <div class="homecontainer">
 

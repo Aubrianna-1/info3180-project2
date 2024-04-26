@@ -5,8 +5,8 @@
         :followers="followers" 
         :follow="follow" 
         :posts="posts" 
-        :canFollow="true" 
-        :isFollowed="isFollowed"
+        :canFollow="false" 
+        :isFollowed="false"
     />
     <UserPhotos v-if="posts" :posts="posts"/>
 </template>
@@ -20,14 +20,10 @@
 
     let route = useRoute();
     let router = useRouter();
-    let loggedUser = ref('')
     let id = ref('')
     let userDetails = ref({})
     let posts = ref([])
     let followers = ref([])
-    let isFollowed = ref()
-
-    id.value = route.params.id
 
     let csrf_token = ref("")
     let token = localStorage.getItem('token')
@@ -47,17 +43,13 @@
             const response = await fetch(`/api/v1/currentuser`);
             if(response.ok) {
                 const data = await response.json();
+                console.log(data);
                 if(data.hasOwnProperty('message')) {
-                    loggedUser.value = data["message"];
-
-                    //If the user is trying to view their own page, then redirect to /myprofile route
-                    if(loggedUser.value == id.value){
-                        router.push({path : '/myprofile'});
-                    }
+                    console.log(`User: ${data["message"]}`);
+                    id.value = data["message"];
                 }
-                if(loggedUser.value === ''){
-                    //If user is not logged in then redirect to login page
-                    console.log(`User: ${loggedUser.value}`);
+                if(id.value === ''){
+                    console.log(`User: ${id.value}`);
                     router.push({path : '/login'});
                 }
             } else {
@@ -67,7 +59,7 @@
             console.log(error);
         }
     }
-
+    
     async function fetchPosts(){
         console.log(`Fetching Posts for User ${id.value}`);
         try {
@@ -108,19 +100,8 @@
             if (response.ok) {
                 const data = await response.json();
                 followers.value = data["followers"];
-
-                console.log("Followers")
-                console.log(followers.value)
-                console.log("Logged User")
-                console.log(loggedUser.value)
-                isFollowed.value = false
-                
-                followers.value.forEach(follow => {
-                    if(follow == loggedUser.value){
-                        isFollowed.value = true
-                    }
-                });
-
+                console.log('Followers:')
+                console.log(data)
             } else {
                 return Promise.reject('Something was wrong with fetch request!');
             }
@@ -132,9 +113,9 @@
     function follow() {
         let formData = new FormData()
         formData.append('target_id', id)
-        formData.append('user_id', loggedUser.value)
+        formData.append('user_id', loggedUser.id)
 
-        fetch(`/api/v1/users/${userDetails.value.id}/follow`, {
+        fetch(`/api/v1/users/${userDetails.id}/follow`, {
             method: 'POST',
             body: formData,
             headers: {
@@ -146,8 +127,6 @@
         })
         .then(function (data) {
             console.log(data);
-            isFollowed.value = true
-            followers.value.push(loggedUser)
         })
         .catch(function (error) {
             console.log(error);
@@ -159,7 +138,6 @@
     }
 
     onMounted(async () => {
-        await getCsrfToken()
         await fetchLoggedInUser()
         await fetchUserDetails()
         await fetchFollowers()

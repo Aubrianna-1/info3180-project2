@@ -1,7 +1,5 @@
 <template>
-
     <div class="container">
-
             <div class="form-box">
                 <div className="login-header">
                     <h3>Login</h3>
@@ -25,18 +23,12 @@
                         <input type="text" name="password" class="formcontrol " />
                     </div>
 
-
                     <div>
                         <input class="button" type="submit" value="Login"/>
                     </div>
-
-
                     </form>
-            </div>
-            
-        
-    </div>
-   
+            </div>       
+    </div>  
 
 </template>
 
@@ -110,23 +102,16 @@
 </script>
 
 <style>
-
     .form-box{
         max-width: 500px;
         width: 100%;
     }
-
     #loginForm{
         display: flex;
         flex-direction: column;
-
         justify-content: center;
-
-        
-
-        background-color: white;
         padding: 50px;
-
+        background-color: white;
         box-shadow: 2px 2px 8px rgb(88, 88, 88);
     }
 
@@ -156,7 +141,7 @@
     }
 
     .button{
-        background-color: rgb(7, 202, 43);
+        background-color: rgb(10, 202, 43);
         color: white;
         font-weight: bold;
 
@@ -169,7 +154,7 @@
     }
 
     .button:hover{
-        background-color: rgb(4, 220, 44);
+        background-color: rgb(3, 220, 44);
         color: white;
         transition: all 0.8s;
     }
