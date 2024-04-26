@@ -223,6 +223,15 @@ def all_posts():
   ]
   return jsonify({"posts": post_data})
 
+@app.route('/api/v1/csrf-token', methods=['GET'])
+def get_csrf():
+    return jsonify({'csrf_token': generate_csrf()})
+
+@app.route("/api/v1/photo/<filename>", methods=['GET'])
+def get_image(filename):
+    return send_from_directory(os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
+
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
