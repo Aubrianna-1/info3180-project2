@@ -10,9 +10,13 @@ from app import app, db
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from app.forms import RegistrationForm, LoginForm, PostForm
-from flask import render_template, request, jsonify, send_file, send_from_directory, flash, url_for, redirect, session, abort
+from flask import render_template, request, jsonify, send_file, send_from_directory, flash, url_for, redirect, session, abort, Flask
 from app.models import Users, Posts, Likes, Follows
 
+# to handle photos for registration
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads/'  
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 ###
 # Routing for your application.
@@ -26,6 +30,46 @@ def index():
 ###
 # The functions below should be applicable to all Flask apps.
 ###
+@app.route('/api/v1/register', methods=['POST'])
+def register():
+    form = RegistrationForm()
+
+    # Check if the form data is valid
+    if form.validate_on_submit():
+        photo = form.profilePic.data 
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        # Extract data from the form
+        username = form.username.data
+        password = form.password.data
+        firstName = form.firstName.data
+        lastName = form.lastName.data
+        email = form.email.data
+        location = form.location.data
+        biography = form.biography.data
+        profilePic = filename 
+
+        # Check if the username is already taken
+        existing_user = Users.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify(message="Username already exists"), 400
+
+        # Create a new user object
+        new_user = Users(username=username, password=password, firstName=firstName, 
+                         lastName=lastName, email=email, location=location, 
+                         biography=biography, profilePic = profilePic)
+
+        # Add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+        # Return a success message
+        return jsonify(message="User registered successfully"), 201
+
+    # If form validation fails, return validation errors
+    return jsonify(errors=form_errors(form)), 400
+
 
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use
