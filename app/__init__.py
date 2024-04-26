@@ -5,9 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-csfr = CSRFProtect(app)
 app.config.from_object(Config)
 
+csfr = CSRFProtect(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
