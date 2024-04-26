@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 
 class Users(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True, autoIncrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(80))
     firstName = db.Column(db.String(80))
@@ -41,13 +41,16 @@ class Users(db.Model):
         except NameError:
             return str(self.id) #python 3 support
         
+    # def __repr__(self):
+    #     return '<User %r>' (self.username)
     def __repr__(self):
-        return '<User %r>' (self.username)
+        return '<User %r>' % self.username
+
 
 
 class Posts(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True, autoIncrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     caption = db.Column(db.String)
     photo = db.Column(db.String)
     user_id = db.Column(db.Integer) #db.ForeignKey("users.id"))
@@ -56,12 +59,12 @@ class Posts(db.Model):
     
 class Likes(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True, autoIncrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer) #db.ForeignKey("posts.id")
     user_id = db.Column(db.Integer) #db.ForeignKey("users.id")
 
 class Follows(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True, autoIncrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     follower_id = db.Column(db.Integer) #db.ForeignKey("users.id")
     user_id = db.Column(db.Integer)  #db.ForeignKey("users.id")
