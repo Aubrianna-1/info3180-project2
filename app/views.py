@@ -134,7 +134,43 @@ def get_user(user_id):
 def extract_user_id_from_token(token):
   # Implement logic to extract user ID from JWT token (handle potential errors)
   # ...
-  pass       
+  pass  
+
+#follow a user
+@app.route("/api/users/<int:user_id>/follow", methods=["POST"])
+@authorize
+def follow(user_id):
+  """Allows a user to follow another user.
+  Args:
+      user_id: The ID of the current user attempting to follow (other person).
+  Returns:
+      A JSON response indicating success or failure.
+  """
+  current_user = Users.query.filter_by(id=user_id).first()
+  if not current_user:
+    return jsonify({"error": "User does not exist"}), 404
+
+  data = request.get_json()
+  if not data or "follow_id" not in data:
+    return jsonify({"error": "Missing required field: follow_id"}), 400
+
+  other_id = data["follow_id"]
+  other_user = Users.query.filter_by(id=other_id).first()
+  if not other_user:
+    return jsonify({"error": "other user does not exist"}), 404
+
+  # Check if already following (optional)
+  # already_following = Follows.query.filter_by(
+  #     follower=current_user, currentuser=other_user
+  # ).first()
+  # if already_following:
+  #     return jsonify({"message": "You are already following this user"}), 400
+
+  follow = Follows(follower=current_user, currentuser=other_user)
+  db.session.add(follow)
+  db.session.commit()
+
+  return jsonify({"message": f"You are now following {other_user.username}"}), 201
 
 #logout
 @app.route("/api/v1/auth/logout", methods = ["POST"])
