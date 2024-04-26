@@ -10,6 +10,7 @@ from app import app, db
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from werkzeug.exceptions import NotFound
+from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import RegistrationForm, LoginForm, PostForm
 from flask import render_template, request, jsonify, send_file, send_from_directory, flash, url_for, redirect, session, abort
 from app.models import Users, Posts, Likes, Follows
@@ -138,7 +139,6 @@ def extract_user_id_from_token(token):
 
 #follow a user
 @app.route("/api/users/<int:user_id>/follow", methods=["POST"])
-@authorize
 def follow(user_id):
   """Allows a user to follow another user.
   Args: user_id: The ID of the current user attempting to follow (other person).
@@ -200,7 +200,7 @@ def create_post(current_user_id):
 @app.route("/api/v1/auth/logout", methods = ["POST"])
 @login_required
 def logout():
-    logoutuser()
+    logout_user()
     message = {'success':'Sucessfully logged out'}
     
 # all posts
