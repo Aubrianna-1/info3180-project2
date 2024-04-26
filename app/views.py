@@ -191,6 +191,50 @@ def create_post(current_user_id):
         else:
            return "Error! Something went wrong"
 
+
+#to view another users posts
+@app.route('/api/v1/users/<int:user_id>/posts', methods=['GET'])
+def get_user_posts(user_id):
+    try:
+        user = Users.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        user_posts = Posts.query.filter_by(user_id=user_id).all()
+        posts_list = [{'id': post.id, 'caption': post.caption, 'photo': post.photo, 'created_on': post.created_on} for post in user_posts]
+
+        return jsonify({'user': user.username, 'posts': posts_list}), 200
+
+    except Exception as e:
+        print(e)
+        jsonify(errors='An unexpecte error occurred'), 500
+                        
+#to like a post
+@app.route('/api/v1/posts/<int:post_id>/like', methods=['POST'])
+@login_required
+def like_post(post_id):
+    try:
+        # Check if the post exists
+        post = Posts.query.get(post_id)
+        if not post:
+            return jsonify({'message': 'Post not found'}), 404
+
+        # Check if the user has already liked the post
+        existing_like = Likes.query.filter_by(post_id=post_id, user_id=current_user.id).first()
+        if existing_like:
+            return jsonify({'message': 'You have already liked this post'}), 400
+
+        # Create a new like for the post by the current user
+        new_like = Likes(post_id=post_id, user_id=current_user.id)
+        db.session.add(new_like)
+        db.session.commit()
+
+        return jsonify({'message': 'Post liked successfully'}), 200
+
+    except Exception as e:
+        print(e)
+        jsonify(errors='An unexpecte error occurred'), 500
+                        
 #logout
 @app.route("/api/v1/auth/logout", methods = ["POST"])
 @login_required
