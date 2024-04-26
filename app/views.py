@@ -132,11 +132,6 @@ def get_user(user_id):
 
   return jsonify(user_data), 200
 
-def extract_user_id_from_token(token):
-  # Implement logic to extract user ID from JWT token (handle potential errors)
-  # ...
-  pass  
-
 #follow a user
 @app.route("/api/users/<int:user_id>/follow", methods=["POST"])
 def follow(user_id):
