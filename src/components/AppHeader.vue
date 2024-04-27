@@ -2,7 +2,7 @@
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">VueJS with Flask</a>
+        <a class="navbar-brand" href="/">Photogram</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -24,6 +24,17 @@
             </li>
             <li class="nav-item">
               <RouterLink class="nav-link" to="/register">Register</RouterLink>
+              <RouterLink v-if="isLoggedIn == 'true'" class="nav-link" to="/explore">Explore</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink v-if="isLoggedIn == 'true'" class="nav-link" to="/myprofile">My Profile</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink v-if="isLoggedIn == 'false'" class="nav-link" to="/register">Register</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink v-if="isLoggedIn == 'false'" class="nav-link" to="/login">Login</RouterLink>
+              <RouterLink v-else class="nav-link" to="/logout">Logout</RouterLink>
             </li>
           </ul>
         </div>
@@ -34,8 +45,14 @@
 
 <script setup>
 import { RouterLink } from "vue-router";
+  let isLoggedIn = localStorage.getItem('isLogin');
 </script>
 
 <style>
-/* Add any component specific styles here */
+  
+  .navbar{
+
+    background-color: rgba(0, 115, 255, 0.895);
+  }
+
 </style>
