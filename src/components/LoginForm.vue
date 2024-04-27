@@ -32,6 +32,8 @@
 
 </template>
 
+
+
 <script setup>
 
     import { ref, onMounted } from "vue"; onMounted(() => {     
@@ -117,13 +119,9 @@
 
     .container{
         display: flex;
-        flex-direction: column;
-        /* flex-wrap: wrap; */
-        
-        padding: 50px;
-        
-        align-items: center;
-        
+        flex-direction: column;       
+        padding: 50px;        
+        align-items: center;        
     }
 
     .form-group{
@@ -144,10 +142,8 @@
         background-color: rgb(10, 202, 43);
         color: white;
         font-weight: bold;
-
         border: none;
         border-radius: 10px;
-
         width: 100%;
         margin-top: 10px;
         padding: 6px;
@@ -162,7 +158,4 @@
     .login-header h3{
         font-weight: bold;
     }
-
-
-
 </style>

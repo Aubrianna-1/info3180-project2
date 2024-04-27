@@ -1,5 +1,5 @@
 <script setup>
-    import LogOut from "@/components/LogOut.vue";
+    import LogOut from "@/components/Logout.vue";
 </script>
 
 <template>

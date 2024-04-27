@@ -3,8 +3,10 @@ import { ref, onMounted } from "vue";
 import { defineProps } from 'vue';
 
 const props = defineProps(['userDetails', 'followers', 'posts', 'canFollow', 'follow', 'isFollowed'])
-
 </script>
+
+
+
 
 <template>
 <div class="container profile p-3">
@@ -43,7 +45,6 @@ const props = defineProps(['userDetails', 'followers', 'posts', 'canFollow', 'fo
 </template>
   
 <style>
-/* Add any component specific styles here */
 .profile{
     background-color: white;
     box-shadow: 0 2px 5px rgb(0, 0, 0, 0.4);
@@ -87,6 +88,4 @@ p{
         width: 150px;
     }
 }
-
-
 </style>

@@ -1,5 +1,4 @@
 <template>
-
     <div class="container">
         <div className="logout-box">
             <div className="logout-header">
@@ -8,32 +7,23 @@
                     <p>Successfully Logged Out</p>
                 </div>
             </div>
-
             <div class="message-box">
-                <p>Are you sure you want to logout?</p>
+                <p>Are you sure you want to log out?</p>
                 <button @click="logout" class="btn btn-primary">Logout</button>
             </div>
-        </div>
-        
-    </div>
-    
-    
+        </div>    
+    </div>    
 </template>
 
 <script setup>
-
-
   import { ref, onMounted } from "vue"; onMounted(() => {  
         getCsrfToken();   
     }); 
 
     import {useRouter} from "vue-router";
     const router = useRouter()
-
     let logoutStatus = ref("");  
-    let csrf_token = ref("");
-
-     
+    let csrf_token = ref("");    
     let token = localStorage.getItem('token')
     
     console.log(token)
@@ -50,8 +40,7 @@
     function logout() {  
         
         let auth = 'Bearer '+ token
-        console.log(auth)
-     
+        console.log(auth)     
         fetch("/api/v1/auth/logout", {     
             method: 'POST',
             headers: {             
@@ -79,17 +68,17 @@
      
 </script>
 
+
+
+
 <style>
 
     .container{
         display: flex;
-        flex-direction: column;
-        /* flex-wrap: wrap; */
-        
+        flex-direction: column;        
         padding: 50px;
         
-        align-items: center;
-        
+        align-items: center;        
     }
 
     .logout-box{
@@ -100,13 +89,10 @@
     .message-box{
         display: flex;
         flex-direction: column;
-
         justify-content: center;
         text-align: center;
-
         background-color: white;
         padding: 50px;
-
         box-shadow: 2px 2px 8px rgb(88, 88, 88);
     }
 

@@ -21,3 +21,7 @@ class LoginForm(FlaskForm):
 class PostForm(FlaskForm):
     photo = FileField('Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png','jpeg'], 'Images only!')])
     caption = TextAreaField('Caption', validators=[InputRequired()])
+
+class FollowForm(FlaskForm):
+    target_id = StringField('Target', validators=[InputRequired()])
+    user_id = StringField('User', validators=[InputRequired()])

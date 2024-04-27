@@ -21,7 +21,7 @@
   
           <div class="explore-stats">
                 <div class="likes"  @click="() => likedPost(post.id)">
-                    <img src="heart.png" alt="red heart, post liked">
+                    <img src="heart.png" alt="heart, liked post">
                     <div><span>{{ post.likes }}</span> likes</div>
                 </div>
   
@@ -156,7 +156,7 @@
     gap: 10px;
     text-decoration: none;
     font-weight: 500;
-    color: rgb(83, 83, 83);
+    color: rgb(77, 77, 77);
     width: 20px;
     border-radius: 50%;
     object-fit: cover;
@@ -190,7 +190,7 @@
     justify-content: center;
     text-decoration: none;
     color: #fff;
-    background: rgb(42, 174, 207);
+    background: rgb(35, 153, 183);
     height: 30px;
     width: 200px;
     text-align: center;
