@@ -49,19 +49,31 @@ class Users(db.Model):
 
 
 class Posts(db.Model):
+<<<<<<< HEAD
 
+=======
+>>>>>>> 221d3dda45efd35d1e9fee29b42be70f905e273a
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     caption = db.Column(db.String)
     photo = db.Column(db.String)
-    user_id = db.Column(db.Integer) #db.ForeignKey("users.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_on = db.Column(db.DateTime, default=datetime.now)
-    #likes = db.relationship("Likes", backref="posts")
+    user = db.relationship("Users", backref="posts")
     
 class Likes(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
+<<<<<<< HEAD
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     post_id = db.Column(db.Integer) #db.ForeignKey("posts.id")
     user_id = db.Column(db.Integer) #db.ForeignKey("users.id")
+=======
+    # Define relationship with Users and Posts
+    user = db.relationship("Users", backref="likes")
+    post = db.relationship("Posts", backref="likes")
+>>>>>>> 221d3dda45efd35d1e9fee29b42be70f905e273a
 
 class Follows(db.Model):
 
