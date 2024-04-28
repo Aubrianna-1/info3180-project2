@@ -15,49 +15,60 @@
                 </ul>
             </div>
 
-            <form @submit.prevent = "register" id = "RegisterForm">
+            <form @submit.prevent = "register" id = "RegistrationForm">
                 <div class = "formInfo">
                     <div class="form-group mb-3">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" name="username" class="formcontrol" />
+                        <small v-if="formData.username === ''" class="text-danger">Username is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="text" name="password" class="formcontrol" />
+                        <small v-if="formData.password === ''" class="text-danger">Password is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="firstName" class="form-label">Firstname</label>
                         <input type="text" name="firstName" class="formcontrol" />
+                        <small v-if="formData.firstName === ''" class="text-danger">First Name is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="lastName" class="form-label">Lastname</label>
                         <input type="text" name="lastName" class="formcontrol" />
+                        <small v-if="formData.lastName === ''" class="text-danger">Last Name is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="text" name="email" class="formcontrol" />
+                        <small v-if="formData.email === ''" class="text-danger">Email is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="location" class="form-label">Location</label>
                         <input type="text" name="location" class="formcontrol" />
+                        <small v-if="formData.location === ''" class="text-danger">Location is required</small>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="biography" class="form-label">Biography</label>
                         <textarea name="biography" class="formcontrol" ></textarea>
+                        <small v-if="formData.biography === ''" class="text-danger">A Biography is required</small>
+
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="photo" class="form-label">Photo</label>
                         <input type="file" id="photo" name="photo" class="formcontrol" accept=".jpg,.jpeg,.png" />
+                        <small v-if="formData.profile_photo === null" class="text-danger"> A photo is required</small>
                     </div>
 
-                    <button type ="register">Register</button>
+                    <button type ="submit">Register</button>
+
+                    <div v-if="registrationError" class="text-danger">{{ registrationError }}</div>
                 </div>
             </form>
         </div>
@@ -65,12 +76,15 @@
 
 </template>
 
+
 <script setup>
     import { ref, onMounted } from "vue";
+    
     let csrf_token = ref("")
     let fetchResponseType = ref("")
     let fetchResponse = ref("")
-    
+
+
     function getCsrfToken() {
         fetch('/api/v1/csrf-token')
         .then((response) => response.json())
@@ -83,8 +97,8 @@
         getCsrfToken()
     })
     function register(){
-        let RegisterForm = document.querySelector("#RegisterForm")
-        let formData = new FormData(RegisterForm)
+        let RegistrationForm = document.querySelector("#RegistrationForm")
+        let formData = new FormData(RegistrationForm)
         fetch("/api/v1/register", {
             method: 'POST',
             body: formData,
@@ -110,6 +124,14 @@
         });
     }
 </script>
+
+
+
+
+
+
+
+
 
 <style>
     
@@ -162,6 +184,6 @@
     button:hover{
         background-color: rgb(0, 255, 47);
         color: white;
-        transition: all 1s;
+        transition: all 0.9s;
     }
 </style>

@@ -21,19 +21,19 @@ from datetime import datetime, timedelta
 # Securing the applications routing
 ###
 
+###
 # generating a csrf token
+###
 @app.route('/api/v1/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
 
 
-
+###
 # authorization to check if a valid jwt-token was found
-
-def requires_auth(f):
-    
+###
+def requires_auth(f): 
   @wraps(f)
-  
   def decorated(*args, **kwargs):
     auth = request.headers.get('Authorization', None)
     if not auth:
@@ -62,7 +62,11 @@ def requires_auth(f):
 
   return decorated
 
+
+
+###
 #generating a jwt token
+###
 @app.route("/api/v1/generate-token")
 def generate_token():
     timestamp = datetime.utcnow()
@@ -87,6 +91,88 @@ def index():
     return jsonify(message="This is the beginning of our API")
 #def index(user):
     #return jsonify({"message":"This is the beginning of our API"})
+
+###
+# Registration
+###
+
+@app.route('/api/v1/register',methods=["POST"])
+def register():
+    form = RegistrationForm()
+    if request.method == "POST" and form.validate_on_submit():
+        username =form.username.data
+        password = form.password.data
+        firstName = form.firstName.data
+        lastName = form.lastName.data
+        email = form.email.data
+        location = form.location.data
+        biography = form.biography.data
+        profilePic = form.profilePic.data
+        filename = secure_filename(profilePic.filename)
+
+        user = Users(username, password, firstName, lastName, email, location, biography, filename)
+        profilePic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        db.session.add(user)
+        db.session.commit()
+
+        return jsonify({'message': f"Account created successfully for {username}"})
+    
+    else:
+        db.session.rollback()
+        formErrors = form_errors(form)
+        errors = {
+            "errors": formErrors
+        }
+        return jsonify(errors)
+    
+
+###
+#Login Logout
+###
+
+###
+# Login
+###
+@app.route('/api/v1/auth/login', methods=['POST'])
+def login():
+    
+    form = LoginForm()
+    
+    message = ''
+    
+    if request.method == "POST":
+        if form.validate_on_submit():          
+            username = form.username.data
+            password = form.password.data           
+            user = db.session.execute(db.select(Users).filter_by(username=username)).scalar()           
+            if user is not None and (check_password_hash(user.password, password)):
+                login_user(user)
+                message = {'token': generate_token()}                
+            else:                
+                message = {'errors': ['Username or password incorrect']}                
+        else:
+            errors = form_errors(form)       
+            if (errors):                
+                error_list = {"errors": []}                
+                error_list['errors'] = errors                
+                message = error_list                
+        
+        return jsonify(message), 400 
+        
+   
+#Logout
+@app.route("/api/v1/auth/logout", methods=['POST'])
+@requires_auth
+@login_required
+def logout():
+    logout_user()
+    message = {'success':'Successfully logged out'} 
+    return jsonify(message)
+     
+@login_manager.user_loader
+def load_user(id):
+    return db.session.execute(db.select(Users).filter_by(id=id)).scalar()
+
 
 
 @app.route('/api/v1/users/<user_id>', methods=['GET'])
@@ -212,34 +298,6 @@ def like(postID):
 
     return response
 
-@app.route('/api/v1/register',methods=["POST"])
-def register():
-    form = RegistrationForm()
-    if request.method == "POST" and form.validate_on_submit():
-        username =form.username.data
-        password = form.password.data
-        firstName = form.firstName.data
-        lastName = form.lastName.data
-        email = form.email.data
-        location = form.location.data
-        biography = form.biography.data
-        profilePic = form.photo.data
-        filename = secure_filename(profilePic.filename)
-
-        user = Users(username, password, firstName, lastName, email, location, biography, filename)
-        profilePic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        db.session.add(user)
-        db.session.commit()
-
-        return jsonify({'message': f"Account created successfully for {username}"})
-    
-    else:
-        db.session.rollback()
-        formErrors = form_errors(form)
-        errors = {
-            "errors": formErrors
-        }
-        return jsonify(errors)
 
 @app.route('/api/v1/users/<user_id>/follow', methods=['GET'])
 @login_required
@@ -283,48 +341,6 @@ def follow(target_id):
 
         return jsonify({'message' : 'Following User'})
     
-#Login Logout
-
-# Login
-@app.route('/api/v1/auth/login', methods=['POST'])
-def login():
-    
-    form = LoginForm()
-    
-    message = ''
-    
-    if request.method == "POST":
-        if form.validate_on_submit():          
-            username = form.username.data
-            password = form.password.data           
-            user = db.session.execute(db.select(Users).filter_by(username=username)).scalar()           
-            if user is not None and (check_password_hash(user.password, password)):
-                login_user(user)
-                message = {'token': generate_token()}                
-            else:                
-                message = {'errors': ['Username or password not correct']}                
-        else:
-            errors = form_errors(form)       
-            if (errors):                
-                error_list = {"errors": []}                
-                error_list['errors'] = errors                
-                message = error_list                
-        
-        return jsonify(message)  
-        
-   
-#Logout
-@app.route("/api/v1/auth/logout", methods=['POST'])
-@requires_auth
-@login_required
-def logout():
-    logout_user()
-    message = {'success':'Successfully logged out'} 
-    return jsonify(message)
-     
-@login_manager.user_loader
-def load_user(id):
-    return db.session.execute(db.select(Users).filter_by(id=id)).scalar()
 
 
 

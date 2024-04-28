@@ -5,13 +5,15 @@ from werkzeug.security import generate_password_hash
 
 class Users(db.Model):
 
+    __tablename__ = 'users'
+
     id = db.Column(db.Integer, primary_key=True)#, autoIncrement=True)
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(80))
-    firstName = db.Column(db.String(80))
-    lastName = db.Column(db.String(80))
+    username = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    firstName = db.Column(db.String(100))
+    lastName = db.Column(db.String(100))
     email = db.Column(db.String)
-    location = db.Column(db.String(80))
+    location = db.Column(db.String(100))
     biography = db.Column(db.String(255))
     profilePic = db.Column(db.String(100))
     joined_on = db.Column(db.DateTime, default=datetime.now)

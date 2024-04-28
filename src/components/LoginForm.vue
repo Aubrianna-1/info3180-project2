@@ -1,3 +1,69 @@
+<script setup>
+
+    import { ref, onMounted } from "vue"; onMounted(() => {     
+        getCsrfToken(); 
+    });
+    import {useRouter} from "vue-router";
+    const router = useRouter()
+
+    let csrf_token = ref("");  
+    let response = ref([]);
+    let response_type = ref("");
+    
+    localStorage.setItem('isLogin', 'false'); 
+
+
+    function getCsrfToken() {     
+        fetch('/api/v1/csrf-token')       
+        .then((response) => response.json())       
+        .then((data) => {         
+            console.log(data);         
+            csrf_token.value = data.csrf_token;       
+        })   
+    }
+
+    const loginUser = () =>{
+
+        let loginForm = document.getElementById('loginForm'); 
+        let form_data = new FormData(loginForm);
+        
+
+        fetch("/api/v1/auth/login", {     
+            method: 'POST', 
+            body: form_data,
+            headers: {             
+                'X-CSRFToken': csrf_token.value         
+                }  
+            })     
+            .then(function (response) {         
+                return response.json();     
+            })     
+            .then(function (data) {         
+        
+                console.log(data);
+
+                if(data.hasOwnProperty('errors')){
+                    response.value = data;
+                    response_type.value = 'error';
+
+                }   
+                else{
+                    response_type.value = 'success';
+                    localStorage.setItem('token', data.token); 
+
+                    localStorage.setItem('isLogin', 'true' ); 
+
+                    router.push({ path : '/explore' })
+                        .then(() => { router.go() });
+                }  
+            })     
+            .catch(function (error) {         
+                console.log(error, 'Error');     
+            });
+    }
+</script>
+
+
 <template>
     <div class="container">
             <div class="form-box">
@@ -33,75 +99,6 @@
 </template>
 
 
-
-<script setup>
-
-    import { ref, onMounted } from "vue"; onMounted(() => {     
-        getCsrfToken(); 
-    });
-    import {useRouter} from "vue-router";
-    const router = useRouter()
-
-    let csrf_token = ref("");  
-    let response = ref([]);
-    let response_type = ref("");
-    
-    localStorage.setItem('isLogin', 'false'); 
-
-
-    function getCsrfToken() {     
-        fetch('/api/v1/csrf-token')       
-        .then((response) => response.json())       
-        .then((data) => {         
-            console.log(data);         
-            csrf_token.value = data.csrf_token;       
-        })   
-    }
-
-    const loginUser = () =>{
-
-        let loginForm = document.getElementById('loginForm'); 
-        let form_data = new FormData(loginForm);
-
-        
-
-        fetch("/api/v1/auth/login", {     
-            method: 'POST', 
-            body: form_data,
-            headers: {             
-                'X-CSRFToken': csrf_token.value         
-                }  
-            })     
-            .then(function (response) {         
-                return response.json();     
-            })     
-            .then(function (data) {         
-        
-                console.log(data);
-
-                if(data.hasOwnProperty('errors')){
-                    response.value = data;
-                    response_type.value = 'error';
-
-                }   
-                else{
-                    response_type.value = 'success';
-                    localStorage.setItem('token', data.token); 
-
-                    localStorage.setItem('isLogin', 'true' ); 
-
-                    router.push({ path : '/explore' })
-                        .then(() => { router.go() });
-                }  
-            })     
-            .catch(function (error) {         
-                console.log(error, 'Error');     
-            });
-
-    }
-
-
-</script>
 
 <style>
     .form-box{
