@@ -1,3 +1,4 @@
+THE FINAL PROJECT CODE IS IN THE LOGIN-LOGOUT BRANCH, NOT THE MAIN BRANCH
 # INFO3180 VueJS and Flask Starter
 
 This template should help get you started developing with Vue 3 on the frontend and Flask as an API on the backend.
